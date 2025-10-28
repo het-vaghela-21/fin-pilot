@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+body {
+  background-color: #111827;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(to bottom right, #0a0a0a, #1a1a2e);
+}
+
+/* Remove default margins/paddings from the body to ensure full background */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}

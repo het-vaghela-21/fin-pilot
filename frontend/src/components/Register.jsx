@@ -1,12 +1,16 @@
-// frontend/src/components/Login.jsx
+// frontend/src/components/Register.jsx
 
 import { useState } from "react";
 import React from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
-import { FiMail, FiLock } from 'react-icons/fi'; // Import icons
+import { Link } from "react-router-dom";
+import { FiUser, FiMail, FiLock } from 'react-icons/fi'; // Import icons
 
-export default function Login() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+export default function Register() {
+  const [formData, setFormData] = useState({ 
+    name: "", 
+    email: "", 
+    password: "" 
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,19 +19,33 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login Data:", formData);
+    console.log("Register Data:", formData);
     // You can add API call here
-    alert("Login attempt with: " + formData.email); // For testing
+    alert("Registration attempt with: " + formData.email); // For testing
   };
 
   return (
-    // Glassmorphism Card Container (Original "Liquid Glass" theme)
+    // Glassmorphism Card Container
     <div className="w-full max-w-md p-8 space-y-6 bg-white bg-opacity-10 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-700">
       <h2 className="text-3xl font-bold text-center text-blue-400 mb-6">
-        Welcome Back
+        Create Your Account
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         
+        {/* Name Field with Icon */}
+        <div className="relative">
+          <FiUser className="absolute w-5 h-5 text-gray-400 top-3.5 left-4" />
+          <input
+            type="text"
+            placeholder="Your Name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-3 pl-12 text-white bg-gray-900 bg-opacity-50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+          />
+        </div>
+
         {/* Email Field with Icon */}
         <div className="relative">
           <FiMail className="absolute w-5 h-5 text-gray-400 top-3.5 left-4" />
@@ -61,14 +79,14 @@ export default function Login() {
           type="submit"
           className="w-full px-4 py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-105"
         >
-          Login
+          Register
         </button>
       </form>
 
       <p className="text-sm text-center text-gray-300">
-        Don’t have an account?{" "}
-        <Link to="/register" className="font-medium text-blue-400 hover:underline">
-          Sign up
+        Already have an account?{" "}
+        <Link to="/login" className="font-medium text-blue-400 hover:underline">
+          Log in
         </Link>
       </p>
     </div>
