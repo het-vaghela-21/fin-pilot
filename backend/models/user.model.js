@@ -10,7 +10,13 @@ const userSchema = new Schema({
     required: true,
     trim: true,
   },
-  email: {
+  upiId: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+  phone: {
     type: String,
     required: true,
     unique: true,
@@ -19,7 +25,6 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
-    minlength: 6,
   },
 }, {
   timestamps: true, // Automatically adds 'createdAt' and 'updatedAt' fields
