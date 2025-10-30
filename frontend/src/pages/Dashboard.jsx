@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import KPIStat from '../components/dashboard/KPIStat.jsx';
 import CashFlowChart from '../components/dashboard/CashFlowChart.jsx';
 import InsightCard from '../components/dashboard/InsightCard.jsx';
@@ -6,6 +6,9 @@ import RecentTransactions from '../components/dashboard/RecentTransactions.jsx';
 import GoalsProgress from '../components/dashboard/GoalsProgress.jsx';
 import RangePicker from '../components/dashboard/RangePicker.jsx';
 import { getStats, getSummary, listTransactions, getGoal } from '../lib/api';
+import { gsap } from 'gsap';
+import { staggerElements } from '../utils/animations';
+import { CoinStack, GrowthChart } from '../components/decorative/FinanceElements';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({ totals: { income: 0, expense: 0 }, balance: 0 });
@@ -119,41 +122,96 @@ const Dashboard = () => {
     try { return JSON.parse(localStorage.getItem('user')||'null'); } catch { return null; }
   }, []);
 
+  // Animation references
+  const dashboardRef = useRef(null);
+  const kpiRowRef = useRef(null);
+  const welcomeRef = useRef(null);
+
+  useEffect(() => {
+    // Animate welcome section
+    gsap.fromTo(welcomeRef.current,
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }
+    );
+    
+    // Animate KPI cards with stagger
+    staggerElements(
+      '.kpi-card', 
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1 },
+      0.15
+    );
+    
+    // Animate other sections
+    gsap.fromTo('.dashboard-section',
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power2.out", delay: 0.3 }
+    );
+  }, []);
+
   return (
-    <div className="space-y-6">
+    <div ref={dashboardRef} className="space-y-6">
       {goal && Number(goal.amount) > 0 && num(stats.balance) >= Number(goal.amount) && (
         <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-900/40 dark:text-green-200">
-          You have reached the Goal. Congratulations! Let’s prepare for another goal.
+          <span className="inline-block mr-2">✨</span>
+          You have reached the Goal. Congratulations! Let's prepare for another goal.
+          <span className="inline-block ml-2">🎉</span>
         </div>
       )}
-      <div>
-        <h1 className="text-2xl font-semibold">Welcome back, {user?.name || 'Guest'}!</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">Here’s your financial overview for this month.</p>
+      <div ref={welcomeRef} className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Welcome back, {user?.name || 'Guest'}!</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Here's your financial overview for this month.</p>
+        </div>
+        <div className="hidden md:block">
+          <CoinStack size="md" className="animate-bounce" />
+        </div>
       </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <KPIStat title="Account Balance" value={`₹${num(stats.balance).toFixed(2)}`} accent="indigo" />
-        <KPIStat title="Monthly Spending" value={`₹${num(stats.totals?.expense).toFixed(2)}`} accent="red" />
-        <KPIStat title="Savings Rate" value={num(stats.totals?.income) ? `${Math.max(0, Math.round((num(stats.balance)/Math.max(1, num(stats.totals?.income)))*100))}%` : '0%'} accent="green" />
+      <div ref={kpiRowRef} className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <KPIStat 
+          title="Account Balance" 
+          value={`₹${num(stats.balance).toFixed(2)}`} 
+          accent="indigo" 
+          icon="balance"
+          className="kpi-card"
+        />
+        <KPIStat 
+          title="Monthly Spending" 
+          value={`₹${num(stats.totals?.expense).toFixed(2)}`} 
+          accent="red" 
+          icon="spending"
+          className="kpi-card"
+        />
+        <KPIStat 
+          title="Savings Rate" 
+          value={num(stats.totals?.income) ? `${Math.max(0, Math.round((num(stats.balance)/Math.max(1, num(stats.totals?.income)))*100))}%` : '0%'} 
+          accent="green" 
+          icon="savings"
+          className="kpi-card"
+        />
       </div>
 
       {/* Main grid */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+        <div className="space-y-6 lg:col-span-2 dashboard-section">
           <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-600 dark:text-gray-300">Predictive Cash Flow</div>
+            <div className="flex items-center">
+              <GrowthChart size="sm" positive={num(stats.balance) > 0} className="mr-2" />
+              <div className="text-sm text-gray-600 dark:text-gray-300">Predictive Cash Flow</div>
+            </div>
             <RangePicker value={range} onChange={setRange} />
           </div>
           <CashFlowChart data={summary} events={transactions} goalLine={goal ? Number(goal.amount) : undefined} />
         </div>
         <div className="space-y-6">
-          <InsightCard items={transactions} range={range} />
-          <RecentTransactions items={recent} />
+          <InsightCard items={transactions} range={range} className="dashboard-section" />
+          <RecentTransactions items={recent} className="dashboard-section" />
         </div>
       </div>
 
-      <GoalsProgress goals={goals} />
+      <GoalsProgress goals={goals} className="dashboard-section" />
     </div>
   );
 };

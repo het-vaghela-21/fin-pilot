@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./animations.css";
 
 /* App shell sizing */
 html, body, #root {
@@ -6,6 +7,47 @@ html, body, #root {
   width: 100%;
   margin: 0;
   padding: 0;
+}
+
+/* Finance-themed custom styles */
+.money-gradient {
+  background: linear-gradient(135deg, #4ade80 0%, #3b82f6 100%);
+}
+
+.dark .money-gradient {
+  background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
+}
+
+/* Card styles with subtle border glow */
+.finance-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.finance-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3), 0 4px 6px -2px rgba(59, 130, 246, 0.05);
+}
+
+.dark .finance-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2), 0 4px 6px -2px rgba(59, 130, 246, 0.1);
+}
+
+/* Money symbol styles */
+.money-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.dark .money-symbol {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
 }
 
 /* Ensure the entire viewport switches theme (html and body) */

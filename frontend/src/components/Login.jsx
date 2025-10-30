@@ -1,10 +1,13 @@
 // frontend/src/components/Login.jsx
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom"; // Import Link for navigation
-import { FiSmartphone, FiLock, FiKey } from 'react-icons/fi'; // Import icons
+import { FiSmartphone, FiLock, FiKey, FiUser } from 'react-icons/fi'; // Import icons
+import { FaGoogle, FaFacebookF, FaTwitter } from 'react-icons/fa'; // Social media icons
 import { loginUser, resetPassword } from '../lib/auth';
+import { CoinStack, CreditCard, PiggyBank } from '../components/decorative/FinanceElements';
+import '../components/auth.css';
 
 export default function Login() {
   const [formData, setFormData] = useState({ upiId: "", phone: "", password: "" });
@@ -52,44 +55,56 @@ export default function Login() {
 
   return (
     <>
-    {/* Glassmorphism Card Container (Original "Liquid Glass" theme) */}
-    <div className="min-h-screen w-full flex items-center justify-center px-4 bg-gray-50 dark:bg-gray-900">
+    {/* Enhanced auth background with decorative elements */}
+    <div className="min-h-screen w-full flex items-center justify-center px-4 auth-bg bg-gray-50 dark:bg-gray-900">
+      {/* Decorative finance elements */}
+      <div className="finance-icon coin-1 hidden md:block">
+        <CoinStack size="xl" />
+      </div>
+      <div className="finance-icon coin-2 hidden md:block">
+        <CoinStack size="lg" />
+      </div>
+      <div className="finance-icon card-1 hidden md:block">
+        <CreditCard size="xl" />
+      </div>
+      <div className="finance-icon piggy hidden md:block">
+        <PiggyBank size="xl" />
+      </div>
       
-      <div className="w-full max-w-md p-8 space-y-6 rounded-2xl shadow-2xl border bg-white/90 backdrop-blur-md border-gray-200 text-gray-900 dark:bg-gray-900/70 dark:border-gray-700 dark:text-gray-100">
-      <h2 className="text-3xl font-bold text-center text-blue-400 mb-6">
+      <div className="auth-card w-full max-w-md p-8 space-y-6 z-10">
+      <h2 className="auth-title text-3xl font-bold text-center mb-6">
         Welcome Back
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         
         {/* UPI ID Field */}
-        <div className="relative">
-          <FiKey className="absolute w-5 h-5 text-gray-400 top-3.5 left-4" />
+        <div className="auth-input relative">
           <input
             type="text"
             placeholder="yourname@bank (or leave blank if using phone)"
             name="upiId"
             value={formData.upiId}
             onChange={handleChange}
-            className="w-full px-4 py-3 pl-12 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 bg-white text-gray-900 border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
+            className="w-full rounded-lg transition duration-300"
           />
+          <FiKey className="icon w-5 h-5" />
         </div>
 
         {/* Phone Field (optional alternative to UPI) */}
-        <div className="relative">
-          <FiSmartphone className="absolute w-5 h-5 text-gray-400 top-3.5 left-4" />
+        <div className="auth-input relative">
           <input
             type="tel"
             placeholder="Phone Number (or leave blank if using UPI)"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full px-4 py-3 pl-12 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 bg-white text-gray-900 border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
+            className="w-full rounded-lg transition duration-300"
           />
+          <FiSmartphone className="icon w-5 h-5" />
         </div>
 
         {/* Password Field */}
-        <div className="relative">
-          <FiLock className="absolute w-5 h-5 text-gray-400 top-3.5 left-4" />
+        <div className="auth-input relative">
           <input
             type="password"
             placeholder="••••••••"
@@ -97,10 +112,11 @@ export default function Login() {
             value={formData.password}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 pl-12 text-white bg-gray-900 bg-opacity-50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+            className="w-full rounded-lg transition duration-300"
           />
+          <FiLock className="icon w-5 h-5" />
           <div className="mt-2 flex items-center justify-between text-sm">
-            <button type="button" onClick={()=>setShowForgot(true)} className="text-blue-400 hover:underline">Forgot password?</button>
+            <button type="button" onClick={()=>setShowForgot(true)} className="auth-link">Forgot password?</button>
             <Link to="/forgot" className="text-gray-400 hover:underline">Try on separate page</Link>
           </div>
         </div>
@@ -108,15 +124,34 @@ export default function Login() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full px-4 py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-105"
+          className="auth-button w-full py-3"
         >
           Login
         </button>
       </form>
+      
+      {/* Social login divider */}
+      <div className="social-divider">
+        <span>or continue with</span>
+      </div>
+      
+      {/* Social login buttons */}
+      <div className="social-login-container">
+        <button className="social-login-button google-button">
+          <FaGoogle className="icon" />
+          <span>Google</span>
+        </button>
+        <button className="social-login-button facebook-button">
+          <FaFacebookF className="icon" />
+        </button>
+        <button className="social-login-button twitter-button">
+          <FaTwitter className="icon" />
+        </button>
+      </div>
 
-      <p className="text-sm text-center text-gray-600 dark:text-gray-300">
-        Don’t have an account?{" "}
-        <Link to="/register" className="font-medium text-blue-400 hover:underline">
+      <p className="text-sm text-center text-gray-400 mt-6">
+        Don't have an account?{" "}
+        <Link to="/register" className="auth-link">
           Sign up
         </Link>
       </p>
@@ -124,18 +159,61 @@ export default function Login() {
     </div>
 
     {showForgot && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div className="w-full max-w-md rounded-xl border bg-white p-5 shadow-xl dark:border-gray-800 dark:bg-gray-900">
-          <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Reset Password</h3>
-            <button onClick={()=>setShowForgot(false)} className="rounded-md px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">Close</button>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div className="auth-modal w-full max-w-md p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="auth-title text-lg font-semibold">Reset Password</h3>
+            <button 
+              onClick={()=>setShowForgot(false)} 
+              className="rounded-full w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors"
+            >
+              ✕
+            </button>
           </div>
-          <form onSubmit={handleForgot} className="space-y-3">
-            <input value={fp.name} onChange={e=>setFp({...fp, name:e.target.value})} placeholder="Your Name" className="w-full rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800" />
-            <input value={fp.upiId} onChange={e=>setFp({...fp, upiId:e.target.value})} placeholder="yourname@bank" className="w-full rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800" />
-            <input type="password" value={fp.newPassword} onChange={e=>setFp({...fp, newPassword:e.target.value})} placeholder="New Password" className="w-full rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800" />
-            <input type="password" value={fp.confirm} onChange={e=>setFp({...fp, confirm:e.target.value})} placeholder="Confirm Password" className="w-full rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800" />
-            <button className="w-full rounded-md bg-blue-600 px-3 py-2 font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">Update Password</button>
+          <form onSubmit={handleForgot} className="space-y-4">
+            <div className="auth-input relative">
+              <input 
+                value={fp.name} 
+                onChange={e=>setFp({...fp, name:e.target.value})} 
+                placeholder="Your Name" 
+                className="w-full rounded-lg transition duration-300" 
+              />
+              <FiUser className="icon w-5 h-5" />
+            </div>
+            
+            <div className="auth-input relative">
+              <input 
+                value={fp.upiId} 
+                onChange={e=>setFp({...fp, upiId:e.target.value})} 
+                placeholder="yourname@bank" 
+                className="w-full rounded-lg transition duration-300" 
+              />
+              <FiKey className="icon w-5 h-5" />
+            </div>
+            
+            <div className="auth-input relative">
+              <input 
+                type="password" 
+                value={fp.newPassword} 
+                onChange={e=>setFp({...fp, newPassword:e.target.value})} 
+                placeholder="New Password" 
+                className="w-full rounded-lg transition duration-300" 
+              />
+              <FiLock className="icon w-5 h-5" />
+            </div>
+            
+            <div className="auth-input relative">
+              <input 
+                type="password" 
+                value={fp.confirm} 
+                onChange={e=>setFp({...fp, confirm:e.target.value})} 
+                placeholder="Confirm Password" 
+                className="w-full rounded-lg transition duration-300" 
+              />
+              <FiLock className="icon w-5 h-5" />
+            </div>
+            
+            <button className="auth-button w-full py-2 mt-2">Update Password</button>
           </form>
         </div>
       </div>

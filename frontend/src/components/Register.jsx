@@ -1,10 +1,13 @@
 // frontend/src/components/Register.jsx
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiUser, FiSmartphone, FiKey, FiLock } from 'react-icons/fi';
+import { FaGoogle, FaFacebookF, FaTwitter } from 'react-icons/fa'; // Social media icons
 import { registerUser } from '../lib/auth';
+import { CoinStack, CreditCard, PiggyBank } from '../components/decorative/FinanceElements';
+import '../components/auth.css';
 
 export default function Register() {
   const [formData, setFormData] = useState({ name: "", upiId: "", phone: "", password: "" });
@@ -28,17 +31,29 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center px-4 bg-gray-50 dark:bg-gray-900">
-      {/* Glassmorphism Card Container */}
-      <div className="w-full max-w-md p-8 space-y-6 rounded-2xl shadow-2xl border bg-white/90 backdrop-blur-md border-gray-200 text-gray-900 dark:bg-gray-900/70 dark:border-gray-700 dark:text-gray-100">
-        <h2 className="text-3xl font-bold text-center text-blue-400 mb-6">
+    <div className="min-h-screen w-full flex items-center justify-center px-4 auth-bg bg-gray-50 dark:bg-gray-900">
+      {/* Decorative finance elements */}
+      <div className="finance-icon coin-1 hidden md:block">
+        <CoinStack size="xl" />
+      </div>
+      <div className="finance-icon coin-2 hidden md:block">
+        <CoinStack size="lg" />
+      </div>
+      <div className="finance-icon card-1 hidden md:block">
+        <CreditCard size="xl" />
+      </div>
+      <div className="finance-icon piggy hidden md:block">
+        <PiggyBank size="xl" />
+      </div>
+      
+      <div className="auth-card w-full max-w-md p-8 space-y-6 z-10">
+        <h2 className="auth-title text-3xl font-bold text-center mb-6">
           Create Your Account
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
         
         {/* Name Field with Icon */}
-        <div className="relative">
-          <FiUser className="absolute w-5 h-5 text-gray-400 top-3.5 left-4" />
+        <div className="auth-input relative">
           <input
             type="text"
             placeholder="Your Name"
@@ -46,13 +61,13 @@ export default function Register() {
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 pl-12 text-white bg-gray-900 bg-opacity-50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+            className="w-full rounded-lg transition duration-300"
           />
+          <FiUser className="icon w-5 h-5" />
         </div>
 
         {/* UPI ID Field */}
-        <div className="relative">
-          <FiKey className="absolute w-5 h-5 text-gray-400 top-3.5 left-4" />
+        <div className="auth-input relative">
           <input
             type="text"
             placeholder="yourname@bank"
@@ -60,13 +75,13 @@ export default function Register() {
             value={formData.upiId}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 pl-12 text-white bg-gray-900 bg-opacity-50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+            className="w-full rounded-lg transition duration-300"
           />
+          <FiKey className="icon w-5 h-5" />
         </div>
 
         {/* Phone Field */}
-        <div className="relative">
-          <FiSmartphone className="absolute w-5 h-5 text-gray-400 top-3.5 left-4" />
+        <div className="auth-input relative">
           <input
             type="tel"
             placeholder="Phone Number"
@@ -74,13 +89,13 @@ export default function Register() {
             value={formData.phone}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 pl-12 text-white bg-gray-900 bg-opacity-50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+            className="w-full rounded-lg transition duration-300"
           />
+          <FiSmartphone className="icon w-5 h-5" />
         </div>
 
         {/* Password Field with Icon */}
-        <div className="relative">
-          <FiLock className="absolute w-5 h-5 text-gray-400 top-3.5 left-4" />
+        <div className="auth-input relative">
           <input
             type="password"
             placeholder="••••••••"
@@ -88,22 +103,42 @@ export default function Register() {
             value={formData.password}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 pl-12 text-white bg-gray-900 bg-opacity-50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+            className="w-full rounded-lg transition duration-300"
           />
+          <FiLock className="icon w-5 h-5" />
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full px-4 py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-105"
+          className="auth-button w-full py-3"
         >
           Register
         </button>
       </form>
+      
+      {/* Social login divider */}
+      <div className="social-divider">
+        <span>or register with</span>
+      </div>
+      
+      {/* Social login buttons */}
+      <div className="social-login-container">
+        <button className="social-login-button google-button">
+          <FaGoogle className="icon" />
+          <span>Google</span>
+        </button>
+        <button className="social-login-button facebook-button">
+          <FaFacebookF className="icon" />
+        </button>
+        <button className="social-login-button twitter-button">
+          <FaTwitter className="icon" />
+        </button>
+      </div>
 
-      <p className="text-sm text-center text-gray-600 dark:text-gray-300">
+      <p className="text-sm text-center text-gray-400 mt-6">
         Already have an account?{" "}
-        <Link to="/login" className="font-medium text-blue-400 hover:underline">
+        <Link to="/login" className="auth-link">
           Log in
         </Link>
       </p>
